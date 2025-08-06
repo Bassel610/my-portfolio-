@@ -13,6 +13,8 @@ import LoadingSpinner from "../component/ui/LoadingSpinner";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "@/component/Share/footer";
+import MobileNavigation from "@/component/ui/MobileNavigation";
+import { useScrollSpy } from "@/component/hooks/useScrollSpy";
 
 export default function Home() {
   const [activePage, setActivePage] = useState("page-one");
@@ -22,8 +24,21 @@ export default function Home() {
     nextPage: null
   });
   const [isAppLoading, setIsAppLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const wheelRef = useRef(null);
   const isProcessing = useRef(false);
+
+  // Check if mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Simulate app initialization
   useEffect(() => {
@@ -44,12 +59,12 @@ export default function Home() {
   const pageKeys = Object.keys(pages);
 
   useEffect(() => {
-    // Don't attach wheel listener if app is still loading
-    if (isAppLoading) return;
-    
+    // Don't attach wheel listener if app is still loading or on mobile
+    if (isAppLoading || isMobile) return;
+
     const handleWheel = (e) => {
       e.preventDefault();
-      
+
       // Improved scroll sensitivity - ignore very small movements and very large ones
       if (isProcessing.current || Math.abs(e.deltaY) < 10 || Math.abs(e.deltaY) > 100) {
         return;
@@ -92,7 +107,7 @@ export default function Home() {
         currentRef.removeEventListener('wheel', handleWheel);
       }
     };
-  }, [transition, isAppLoading]);
+  }, [transition, isAppLoading, isMobile]);
 
   // Handle transition end with improved timing
   useEffect(() => {
@@ -150,9 +165,40 @@ export default function Home() {
     return <LoadingSpinner fullScreen={true} message="Loading Portfolio" />;
   }
 
+  // Mobile layout - stack screens vertically
+  if (isMobile) {
+    return (
+      <ErrorBoundary>
+        <div style={{
+          width: '100vw',
+          minHeight: '100vh',
+          overflow: 'auto',
+          margin: 0,
+          padding: 0
+        }}>
+          <ScrollProgress currentPage={transition.currentPage} totalPages={4} />
+          <GlassmorphismNav currentPage={transition.currentPage} totalPages={4} />
+          <CursorFollower />
+          <VantaBackground />
+          <FloatingElements count={8} />
+
+          {/* Stack all screens vertically on mobile */}
+          <div style={{ position: 'relative' }}>
+            <First_screen />
+            <Screen_tow />
+            <Screen_three />
+            <Screen_four />
+            <Footer />
+          </div>
+        </div>
+      </ErrorBoundary>
+    );
+  }
+
+  // Desktop layout - wheel navigation
   return (
     <ErrorBoundary>
-      <div 
+      <div
       ref={wheelRef}
       style={{
         position: 'fixed',

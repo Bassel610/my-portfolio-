@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { useState } from 'react';
 import ImageWithFallback from '../ui/ImageWithFallback';
 import LoadingSpinner from '../ui/LoadingSpinner';
@@ -6,7 +6,44 @@ import LoadingSpinner from '../ui/LoadingSpinner';
 export default function Projects({ title, description, img, isIframe = false }) {
     const [iframeLoading, setIframeLoading] = useState(true);
     const [iframeError, setIframeError] = useState(false);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
     return (
+        <>
+        <Box>
+            {/* Mobile Project Title */}
+            {isMobile && (
+                <Box sx={{
+                    textAlign: 'center',
+                    py: 3,
+                    px: 2,
+                    background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1))',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+                }}>
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            color: 'white',
+                            fontWeight: 'bold',
+                            mb: 1,
+                            fontSize: { xs: '1.5rem', sm: '2rem' }
+                        }}
+                    >
+                        {title}
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            fontSize: { xs: '0.9rem', sm: '1rem' }
+                        }}
+                    >
+                        Project Showcase
+                    </Typography>
+                </Box>
+            )}
+        </Box>
         <Stack
             display="flex"
             justifyContent="center"
@@ -201,5 +238,6 @@ export default function Projects({ title, description, img, isIframe = false }) 
                     </Stack>
             </Stack>
         </Stack>
+        </>
     )
 }

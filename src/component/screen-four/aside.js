@@ -10,24 +10,30 @@ export default function Aside({ activeProject }) {
     },
     {
       id: "project-two",
+      title: "PICO Platform",
+      type: "E-commerce",
+      tech: "React • Dynamic UI"
+    },
+    {
+      id: "project-three",
       title: "Interior Design",
       type: "Portfolio Gallery",
       tech: "React • Dynamic UI"
     },
     {
-      id: "project-three",
+      id: "project-four",
       title: "Artisan Donuts",
       type: "Landing Page",
       tech: "Modern Design"
     },
     {
-      id: "project-four",
+      id: "project-five",
       title: "Bershka Store",
       type: "E-commerce",
       tech: "Full Stack"
     },
     {
-      id: "project-five",
+      id: "project-sox",
       title: "Data Nile Research",
       type: "Dashboard Platform",
       tech: "React • Firebase"

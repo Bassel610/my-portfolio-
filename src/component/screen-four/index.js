@@ -24,7 +24,16 @@ export default function ScreenFour() {
         isIframe: false
       }
     },
-    "project-two": {
+        "project-two": {
+      component: Projects,
+      props: {
+        title: "Pico - Fresh Organic Produce Delivery Platform",
+        description: "A modern e-commerce React application for fresh organic produce delivery, built with React 19, Vite 6, and Material-UI 6. Features comprehensive shopping cart functionality, real-time search with advanced filtering, user authentication, and mobile-responsive design. Implemented performance optimizations including code splitting, lazy loading, and intelligent API caching achieving 90+ Lighthouse scores.",
+        img: "https://picco.netlify.app",
+        isIframe: true
+      }
+    },
+    "project-three": {
       component: Projects,
       props: {
         title: "Interior Design Portfolio",
@@ -33,7 +42,7 @@ export default function ScreenFour() {
         isIframe: true
       }
     },
-    "project-three": {
+    "project-four": {
       component: Projects,
       props: {
         title: "Artisan Donuts Landing",
@@ -42,7 +51,7 @@ export default function ScreenFour() {
         isIframe: true
       }
     },
-    "project-four": {
+    "project-five": {
       component: Projects,
       props: {
         title: "Bershka Fashion Store",
@@ -51,7 +60,7 @@ export default function ScreenFour() {
         isIframe: true
       }
     },
-    "project-five": {
+    "project-six": {
       component: Projects,
       props: {
         title: "Data Nile Research Platform",
@@ -174,18 +183,23 @@ export default function ScreenFour() {
       sx={{
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
-        height: '100vh',
+        height: { xs: 'auto', md: '100vh' },
+        minHeight: { xs: '100vh', md: 'auto' },
         overflow: 'hidden'
       }}
     >
-      <Aside activeProject={transition.currentProject} />
+      {/* Hide sidebar on mobile, show on desktop */}
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+        <Aside activeProject={transition.currentProject} />
+      </Box>
 
       <Box sx={{
         flex: 1,
         position: 'relative',
         overflow: 'hidden',
         marginLeft: { xs: 0, md: '250px' },
-        height: { xs: 'calc(100vh - 200px)', md: '100vh' }
+        height: { xs: 'auto', md: '100vh' },
+        minHeight: { xs: '100vh', md: 'auto' }
       }}>
         {/* Current Project */}
         <Box sx={{
