@@ -58,15 +58,16 @@ const HeroSection = () => {
   return (
     <Box
       sx={{
-        minHeight: "33vh",
+        minHeight: { xs: "auto", md: "33vh" },
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        px: 3,
-        py: 10,
+        px: { xs: 2, sm: 3, md: 4 },
+        py: { xs: 4, sm: 6, md: 10 },
         position: "relative",
-        overflow: "hidden"
+        overflow: "hidden",
+        flex: { xs: 'none', md: 1 }
       }}
     >
 
@@ -78,13 +79,14 @@ const HeroSection = () => {
       >
         <motion.div variants={itemVariants}>
           <Typography
-            variant={isMobile ? "h4" : "h2"}
+            variant="h1"
             component="h1"
             gutterBottom
             sx={{
               fontWeight: 700,
               color: "#E0D3FF",
               mb: 2,
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem', lg: '3.5rem' }
             }}
           >
             Hi, I'm{" "}
@@ -127,14 +129,16 @@ const HeroSection = () => {
 
         <motion.div variants={itemVariants}>
           <Typography
-            variant={isMobile ? "body1" : "h6"}
+            variant="h6"
             sx={{
               fontWeight: 400,
               color: "rgba(224, 211, 255, 0.8)",
               mb: 4,
-              maxWidth: "600px",
+              maxWidth: { xs: "100%", sm: "500px", md: "600px" },
               mx: "auto",
-              lineHeight: 1.6
+              lineHeight: 1.6,
+              fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
+              px: { xs: 1, sm: 0 }
             }}
           >
             I build solutions that are{" "}

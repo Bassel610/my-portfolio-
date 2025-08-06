@@ -168,21 +168,24 @@ export default function ScreenFour() {
     : null;
 
   return (
-    <Box 
-      id="screen-four" 
+    <Box
+      id="screen-four"
       ref={wheelRef}
       sx={{
         display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
         height: '100vh',
         overflow: 'hidden'
       }}
     >
       <Aside activeProject={transition.currentProject} />
-      
+
       <Box sx={{
         flex: 1,
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        marginLeft: { xs: 0, md: '250px' },
+        height: { xs: 'calc(100vh - 200px)', md: '100vh' }
       }}>
         {/* Current Project */}
         <Box sx={{

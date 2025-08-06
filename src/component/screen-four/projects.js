@@ -9,23 +9,32 @@ export default function Projects({ title, description, img, isIframe = false }) 
     return (
         <Stack
             display="flex"
-            justifyContent="end"
+            justifyContent="center"
             alignItems="center"
-            minHeight="100vh"
-            flexDirection='row'
-            height='475px'
+            minHeight={{ xs: 'auto', md: '100vh' }}
+            flexDirection={{ xs: 'column', md: 'row' }}
+            height={{ xs: 'auto', md: '475px' }}
+            sx={{ py: { xs: 2, md: 0 } }}
         >
             <Stack
-            flexDirection='row'
+            flexDirection={{ xs: 'column', md: 'row' }}
             justifyContent='space-between'
-                spacing={2}
+                spacing={{ xs: 3, md: 2 }}
                 sx={{
-                    maxWidth: 1200, // Increased width for better iframe display
-                    p: 2, // Padding
-                    textAlign: 'center' // Center text if needed
+                    maxWidth: { xs: '100%', md: 1200 },
+                    p: { xs: 1, md: 2 },
+                    textAlign: 'center',
+                    width: '100%'
                 }}
             >
-                <Stack width='55%' sx={{ height: '400px', position: 'relative' }}>
+                <Stack
+                    width={{ xs: '100%', md: '55%' }}
+                    sx={{
+                        height: { xs: '250px', sm: '300px', md: '400px' },
+                        position: 'relative',
+                        order: { xs: 2, md: 1 }
+                    }}
+                >
                     {isIframe ? (
                         <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
                             {iframeLoading && (

@@ -35,15 +35,17 @@ export default function Aside({ activeProject }) {
   ];
 
   return (
-    <Box sx={{ 
-      width: 250,
-      p: 2,
-      borderRight: '3px solid',
+    <Box sx={{
+      width: { xs: '100%', md: 250 },
+      p: { xs: 1, md: 2 },
+      borderRight: { xs: 'none', md: '3px solid' },
+      borderBottom: { xs: '3px solid', md: 'none' },
       borderColor: '#667eea',
-      height: '100vh',
-      position: 'fixed',
-      left: 0,
-      top: 0,
+      height: { xs: 'auto', md: '100vh' },
+      maxHeight: { xs: '200px', md: '100vh' },
+      position: { xs: 'relative', md: 'fixed' },
+      left: { xs: 'auto', md: 0 },
+      top: { xs: 'auto', md: 0 },
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
       color: 'white',
       overflowY: 'auto',
@@ -63,13 +65,14 @@ export default function Aside({ activeProject }) {
         }
       }
     }}>
-      <Typography variant="h5" sx={{ 
-        mb: 3, 
+      <Typography variant="h5" sx={{
+        mb: { xs: 2, md: 3 },
         fontWeight: 'bold',
         textAlign: 'center',
         color: 'white',
         borderBottom: '2px solid rgba(255,255,255,0.2)',
-        pb: 2
+        pb: { xs: 1, md: 2 },
+        fontSize: { xs: '1.2rem', md: '1.5rem' }
       }}>
         My Projects
       </Typography>

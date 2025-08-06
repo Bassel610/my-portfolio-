@@ -35,7 +35,14 @@ const jobs = [
 
 
   return (
-    <Box sx={{ maxWidth: 800, mx: "auto", px: 4, py: 8, position: "relative", pt: '24px' }}>
+    <Box sx={{
+      maxWidth: { xs: '100%', sm: 600, md: 800 },
+      mx: "auto",
+      px: { xs: 2, sm: 3, md: 4 },
+      py: { xs: 4, md: 8 },
+      position: "relative",
+      pt: { xs: '16px', md: '24px' }
+    }}>
       {/* Horizontal line from heading to first circle */}
       <Box
         sx={{

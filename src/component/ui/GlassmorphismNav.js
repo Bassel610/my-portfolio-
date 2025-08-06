@@ -37,11 +37,13 @@ export default function GlassmorphismNav({ currentPage, totalPages }) {
       transition={{ duration: 0.3 }}
       style={{
         position: 'fixed',
-        top: '30px',
+        top: '20px',
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 1000,
-        pointerEvents: 'none'
+        pointerEvents: 'none',
+        width: 'auto',
+        maxWidth: 'calc(100vw - 40px)'
       }}
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
@@ -51,20 +53,24 @@ export default function GlassmorphismNav({ currentPage, totalPages }) {
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(255, 255, 255, 0.2)',
         borderRadius: '50px',
-        padding: '12px 24px',
+        padding: window.innerWidth < 768 ? '8px 16px' : '12px 24px',
         display: 'flex',
         alignItems: 'center',
-        gap: '20px',
+        gap: window.innerWidth < 768 ? '12px' : '20px',
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-        pointerEvents: 'auto'
+        pointerEvents: 'auto',
+        fontSize: window.innerWidth < 768 ? '14px' : '16px',
+        flexWrap: 'nowrap',
+        overflow: 'hidden'
       }}>
         {/* Logo/Brand */}
         <motion.div
           style={{
-            fontSize: '20px',
+            fontSize: window.innerWidth < 768 ? '16px' : '20px',
             fontWeight: 'bold',
             color: '#fff',
-            marginRight: '10px'
+            marginRight: window.innerWidth < 768 ? '5px' : '10px',
+            display: window.innerWidth < 480 ? 'none' : 'block'
           }}
           whileHover={{ scale: 1.1 }}
         >

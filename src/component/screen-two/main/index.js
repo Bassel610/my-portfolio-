@@ -15,7 +15,8 @@ export default function AboutSection() {
   return (
     <Box sx={{
       position: 'relative',
-      height: 'calc(100vh - 80px)', // Accounts for footer
+      height: { xs: 'auto', md: 'calc(100vh - 80px)' },
+      minHeight: { xs: '100vh', md: 'auto' },
       width: '100%',
       display: 'flex',
       flexDirection: 'column',
@@ -23,7 +24,8 @@ export default function AboutSection() {
       alignItems: 'center',
       color: '#fff',
       textAlign: 'center',
-      px: 4,
+      px: { xs: 2, sm: 3, md: 4 },
+      py: { xs: 4, md: 0 },
       overflow: 'hidden'
     }}>
       {/* Background overlay */}
@@ -43,12 +45,12 @@ export default function AboutSection() {
         maxWidth: '800px',
         width: '100%'
       }}>
-        <Typography 
-          variant="h2" 
+        <Typography
+          variant="h2"
           sx={{
             fontWeight: 700,
-            mb: 3,
-            fontSize: { xs: '2.5rem', md: '3rem' },
+            mb: { xs: 2, md: 3 },
+            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
             textShadow: '0 2px 10px rgba(0,0,0,0.7)'
           }}
         >
@@ -57,12 +59,13 @@ export default function AboutSection() {
           </GradientText>
         </Typography>
 
-        <Typography 
-          variant="h5" 
+        <Typography
+          variant="h5"
           sx={{
             fontWeight: 400,
-            mb: 4,
-            textShadow: '0 1px 5px rgba(0,0,0,0.5)'
+            mb: { xs: 3, md: 4 },
+            textShadow: '0 1px 5px rgba(0,0,0,0.5)',
+            fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.5rem' }
           }}
         >
           <GradientText mb="5px" variant="accent" animate={true}>
