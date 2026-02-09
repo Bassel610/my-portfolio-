@@ -15,9 +15,10 @@ export default function AboutSection() {
   return (
     <Box sx={{
       position: 'relative',
-      height: { xs: 'auto', md: 'calc(100vh - 80px)' },
+      height: { xs: 'auto', md: 'calc(100vh - 18px)' },
       minHeight: { xs: '100vh', md: 'auto' },
       width: '100%',
+      maxWidth: '100vw',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -26,7 +27,8 @@ export default function AboutSection() {
       textAlign: 'center',
       px: { xs: 2, sm: 3, md: 4 },
       py: { xs: 4, md: 0 },
-      overflow: 'hidden'
+      overflow: 'hidden',
+      boxSizing: 'border-box'
     }}>
       {/* Background overlay */}
       <Box sx={{
@@ -86,13 +88,22 @@ Experienced React Developer with 2+ years of crafting high-performance web appli
         </Typography>
 
         {/* Compact Skills Display */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.5, type: 'spring' }}
-        >
-          <CompactSkills />
-        </motion.div>
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          mt: 2
+        }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.5, type: 'spring' }}
+            style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+          >
+            <CompactSkills />
+          </motion.div>
+        </Box>
       </Box>
     </Box>
   );

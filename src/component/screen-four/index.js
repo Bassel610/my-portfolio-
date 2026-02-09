@@ -1,9 +1,14 @@
-import { Box } from "@mui/material";
+import { Box, useTheme, useMediaQuery } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import Aside from "./aside";
 import Projects from "./projects";
+import MobileProjectSlider from "./MobileProjectSlider";
+import { useScrollBoundary } from "../hooks/useScrollBoundary";
 
 export default function ScreenFour() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
   const [transition, setTransition] = useState({
     direction: null,
     currentProject: "project-one",
@@ -11,7 +16,17 @@ export default function ScreenFour() {
   });
   
   const wheelRef = useRef(null);
+  const projectContentRef = useRef(null);
   const isProcessing = useRef(false);
+
+  // Initialize scroll boundary detection for project content (desktop only)
+  const { 
+    canScrollDown, 
+    canScrollUp, 
+    hasOverflow, 
+    isAtTop, 
+    isAtBottom 
+  } = useScrollBoundary(projectContentRef, !isMobile);
 
   // Project data with props for each project
   const projects = {
@@ -81,6 +96,22 @@ export default function ScreenFour() {
       if (isProcessing.current || Math.abs(e.deltaY) < 5 || e.deltaY > 50) return;
       
       const direction = e.deltaY > 0 ? 'down' : 'up';
+
+      // NEW: Check scroll boundaries before transitioning between projects
+      if (hasOverflow && projectContentRef.current) {
+        if (direction === 'down' && canScrollDown) {
+          // Scroll project content down instead of transitioning
+          projectContentRef.current.scrollTop += e.deltaY;
+          return;
+        }
+        if (direction === 'up' && canScrollUp) {
+          // Scroll project content up instead of transitioning
+          projectContentRef.current.scrollTop += e.deltaY;
+          return;
+        }
+      }
+
+      // Only trigger project transitions at boundaries or when no overflow
       const currentIndex = projectKeys.indexOf(transition.currentProject);
 
       // Prevent scrolling past first/last project
@@ -115,7 +146,7 @@ export default function ScreenFour() {
         currentRef.removeEventListener('wheel', handleWheel);
       }
     };
-  }, [transition, projectKeys]);
+  }, [transition, projectKeys, hasOverflow, canScrollDown, canScrollUp]);
 
   // Handle transition completion
   useEffect(() => {
@@ -127,6 +158,12 @@ export default function ScreenFour() {
           nextProject: null,
           direction: null
         }));
+        
+        // Reset scroll position to top when transitioning to new project
+        if (projectContentRef.current) {
+          projectContentRef.current.scrollTop = 0;
+        }
+        
         isProcessing.current = false;
       }, 800); // Matches CSS transition duration
 
@@ -176,20 +213,37 @@ export default function ScreenFour() {
     ? projects[transition.nextProject].props 
     : null;
 
+  // Mobile Layout - Horizontal Slider
+  if (isMobile) {
+    return (
+      <Box
+        id="screen-four"
+        sx={{
+          width: '100%',
+          height: '100vh',
+          overflow: 'hidden'
+        }}
+      >
+        <MobileProjectSlider projects={projects} />
+      </Box>
+    );
+  }
+
+  // Desktop Layout
   return (
     <Box
       id="screen-four"
       ref={wheelRef}
       sx={{
         display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        height: { xs: 'auto', md: '100vh' },
-        minHeight: { xs: '100vh', md: 'auto' },
-        overflow: 'hidden'
+        flexDirection: 'row',
+        height: '100vh',
+        overflow: 'hidden',
+        position: 'relative'
       }}
     >
-      {/* Hide sidebar on mobile, show on desktop */}
-      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+      {/* Sidebar - Desktop only */}
+      <Box>
         <Aside activeProject={transition.currentProject} />
       </Box>
 
@@ -197,17 +251,20 @@ export default function ScreenFour() {
         flex: 1,
         position: 'relative',
         overflow: 'hidden',
-        marginLeft: { xs: 0, md: '250px' },
-        height: { xs: 'auto', md: '100vh' },
-        minHeight: { xs: '100vh', md: 'auto' }
+        marginLeft: '250px',
+        height: '100vh'
       }}>
         {/* Current Project */}
-        <Box sx={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          ...getProjectStyles('current')
-        }}>
+        <Box 
+          ref={projectContentRef}
+          sx={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            overflow: 'auto',
+            ...getProjectStyles('current')
+          }}
+        >
           <CurrentProject {...currentProps} />
         </Box>
 

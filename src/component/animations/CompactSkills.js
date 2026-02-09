@@ -19,7 +19,8 @@ export default function CompactSkills() {
   return (
     <div style={{
       position: 'relative',
-      width: '300px',
+      width: '100%',
+      maxWidth: '300px',
       height: '250px',
       margin: '2rem auto',
       display: 'flex',

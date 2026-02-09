@@ -9,67 +9,257 @@ export default function Projects({ title, description, img, isIframe = false }) 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
+    // Mobile Layout
+    if (isMobile) {
+        return (
+            <Box sx={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                width: '100%',
+                maxWidth: '100vw',
+                overflow: 'auto',
+                py: 3,
+                px: 2,
+                boxSizing: 'border-box'
+            }}>
+                {/* Project Card */}
+                <Box sx={{
+                    background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05))',
+                    borderRadius: '20px',
+                    overflow: 'hidden',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    maxWidth: '500px',
+                    margin: '0 auto',
+                    width: '100%'
+                }}>
+                    {/* Project Title */}
+                    <Box sx={{
+                        textAlign: 'center',
+                        py: 2.5,
+                        px: 2,
+                        background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15))',
+                        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+                    }}>
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                fontWeight: 700,
+                                fontSize: { xs: '1.2rem', sm: '1.4rem' },
+                                background: 'linear-gradient(45deg, #667eea, #764ba2, #f093fb)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text',
+                                lineHeight: 1.3
+                            }}
+                        >
+                            {title}
+                        </Typography>
+                    </Box>
+
+                    {/* Project Preview */}
+                    <Box sx={{ 
+                        p: 2,
+                        display: 'flex',
+                        justifyContent: 'center'
+                    }}>
+                        <Box sx={{ 
+                            width: '100%',
+                            height: '250px',
+                            position: 'relative'
+                        }}>
+                            {isIframe ? (
+                                <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
+                                    {iframeLoading && (
+                                        <Box sx={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            width: '100%',
+                                            height: '100%',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            background: 'rgba(255,255,255,0.9)',
+                                            borderRadius: '16px',
+                                            zIndex: 2
+                                        }}>
+                                            <LoadingSpinner message="Loading..." size={40} />
+                                        </Box>
+                                    )}
+                                    
+                                    {iframeError ? (
+                                        <Box sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            width: '100%',
+                                            height: '100%',
+                                            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 50%, rgba(240, 147, 251, 0.1) 100%)',
+                                            border: '2px solid rgba(102, 126, 234, 0.3)',
+                                            borderRadius: '16px',
+                                            color: '#667eea'
+                                        }}>
+                                            <Box sx={{ fontSize: '2.5rem', mb: 1 }}>🌐</Box>
+                                            <Box sx={{ textAlign: 'center', px: 2, fontSize: '0.9rem' }}>
+                                                <Box sx={{ fontWeight: 'bold', mb: 0.5 }}>Unable to load</Box>
+                                                <Box sx={{ opacity: 0.7 }}>Project unavailable</Box>
+                                            </Box>
+                                        </Box>
+                                    ) : (
+                                        <Box
+                                            component="iframe"
+                                            src={img}
+                                            onLoad={() => setIframeLoading(false)}
+                                            onError={() => {
+                                                setIframeLoading(false);
+                                                setIframeError(true);
+                                            }}
+                                            sx={{
+                                                width: '100%',
+                                                height: '100%',
+                                                border: '2px solid rgba(102, 126, 234, 0.3)',
+                                                borderRadius: '16px',
+                                                boxShadow: '0 4px 20px rgba(102, 126, 234, 0.2)',
+                                                opacity: iframeLoading ? 0 : 1,
+                                                transition: 'opacity 0.3s ease',
+                                                pointerEvents: 'none'
+                                            }}
+                                            title={title}
+                                            loading="lazy"
+                                        />
+                                    )}
+                                </Box>
+                            ) : (
+                                <Box
+                                    component="img"
+                                    src={img}
+                                    alt={title}
+                                    onError={(e) => {
+                                        e.target.src = "/images/project-placeholder.png";
+                                    }}
+                                    sx={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        borderRadius: '16px',
+                                        border: '2px solid rgba(102, 126, 234, 0.3)',
+                                        boxShadow: '0 4px 20px rgba(102, 126, 234, 0.2)'
+                                    }}
+                                />
+                            )}
+                        </Box>
+                    </Box>
+
+                    {/* Project Description */}
+                    <Box sx={{ 
+                        p: 2.5,
+                        pt: 1.5
+                    }}>
+                        <Typography
+                            sx={{
+                                fontSize: '0.9rem',
+                                lineHeight: 1.6,
+                                color: 'rgba(255, 255, 255, 0.85)',
+                                textAlign: 'left',
+                                mb: 2.5,
+                                maxHeight: '120px',
+                                overflow: 'auto',
+                                '&::-webkit-scrollbar': {
+                                    width: '4px'
+                                },
+                                '&::-webkit-scrollbar-track': {
+                                    background: 'rgba(102, 126, 234, 0.1)',
+                                    borderRadius: '4px'
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                    background: 'rgba(102, 126, 234, 0.3)',
+                                    borderRadius: '4px'
+                                }
+                            }}
+                        >
+                            {description}
+                        </Typography>
+
+                        {/* View Project Button */}
+                        <Box sx={{ 
+                            display: 'flex',
+                            justifyContent: 'center'
+                        }}>
+                            <Box
+                                component="a"
+                                href={isIframe ? img : img}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                sx={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: '100%',
+                                    maxWidth: '250px',
+                                    px: 3,
+                                    py: 1.3,
+                                    background: 'linear-gradient(45deg, #667eea, #764ba2)',
+                                    color: 'white',
+                                    textDecoration: 'none',
+                                    borderRadius: '30px',
+                                    fontSize: '0.95rem',
+                                    fontWeight: 600,
+                                    transition: 'all 0.3s ease',
+                                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                                    touchAction: 'manipulation',
+                                    '&:active': {
+                                        transform: 'scale(0.98)',
+                                        boxShadow: '0 2px 10px rgba(102, 126, 234, 0.3)'
+                                    }
+                                }}
+                            >
+                                View Live Project →
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
+            </Box>
+        );
+    }
+
+    // Desktop Layout (unchanged)
     return (
         <>
         <Box>
-            {/* Mobile Project Title */}
-            {isMobile && (
-                <Box sx={{
-                    textAlign: 'center',
-                    py: 3,
-                    px: 2,
-                    background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1))',
-                    borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
-                }}>
-                    <Typography
-                        variant="h4"
-                        sx={{
-                            color: 'white',
-                            fontWeight: 'bold',
-                            mb: 1,
-                            fontSize: { xs: '1.5rem', sm: '2rem' }
-                        }}
-                    >
-                        {title}
-                    </Typography>
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: 'rgba(255, 255, 255, 0.7)',
-                            fontSize: { xs: '0.9rem', sm: '1rem' }
-                        }}
-                    >
-                        Project Showcase
-                    </Typography>
-                </Box>
-            )}
+            {/* Desktop only - no mobile title here anymore */}
         </Box>
         <Stack
-            display="flex"
+            display={{ xs: 'none', md: 'flex' }}
             justifyContent="center"
             alignItems="center"
-            minHeight={{ xs: 'auto', md: '100vh' }}
-            flexDirection={{ xs: 'column', md: 'row' }}
-            height={{ xs: 'auto', md: '475px' }}
-            sx={{ py: { xs: 2, md: 0 } }}
+            minHeight='100vh'
+            flexDirection='row'
+            height='475px'
+            sx={{ py: 0 }}
         >
             <Stack
-            flexDirection={{ xs: 'column', md: 'row' }}
+            flexDirection='row'
             justifyContent='space-between'
-                spacing={{ xs: 3, md: 2 }}
+                spacing={2}
                 sx={{
-                    maxWidth: { xs: '100%', md: 1200 },
-                    p: { xs: 1, md: 2 },
+                    maxWidth: 1200,
+                    p: 2,
                     textAlign: 'center',
                     width: '100%'
                 }}
             >
                 <Stack
-                    width={{ xs: '100%', md: '55%' }}
+                    width='55%'
                     sx={{
-                        height: { xs: '250px', sm: '300px', md: '400px' },
+                        height: '400px',
                         position: 'relative',
-                        order: { xs: 2, md: 1 }
+                        order: 1
                     }}
                 >
                     {isIframe ? (

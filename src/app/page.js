@@ -10,11 +10,13 @@ import GlassmorphismNav from "../component/ui/GlassmorphismNav";
 import CursorFollower from "../component/ui/CursorFollower";
 import ErrorBoundary from "../component/ui/ErrorBoundary";
 import LoadingSpinner from "../component/ui/LoadingSpinner";
+
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "@/component/Share/footer";
 import MobileNavigation from "@/component/ui/MobileNavigation";
 import { useScrollSpy } from "@/component/hooks/useScrollSpy";
+import { useScrollBoundary } from "@/component/hooks/useScrollBoundary";
 
 export default function Home() {
   const [activePage, setActivePage] = useState("page-one");
@@ -26,18 +28,45 @@ export default function Home() {
   const [isAppLoading, setIsAppLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const wheelRef = useRef(null);
+  const sectionContentRef = useRef(null);
   const isProcessing = useRef(false);
 
-  // Check if mobile device
+  // Initialize scroll boundary detection (only active in desktop mode)
+  const { 
+    canScrollDown, 
+    canScrollUp, 
+    hasOverflow, 
+    isAtTop, 
+    isAtBottom 
+  } = useScrollBoundary(sectionContentRef, !isMobile && !isAppLoading);
+
+  // Check if mobile device with debouncing
   useEffect(() => {
+    let debounceTimer;
+    
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      // Clear existing timer
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+      
+      // Debounce resize events (200ms)
+      debounceTimer = setTimeout(() => {
+        setIsMobile(window.innerWidth < 768);
+      }, 200);
     };
 
-    checkMobile();
+    // Initial check (no debounce)
+    setIsMobile(window.innerWidth < 768);
+    
     window.addEventListener('resize', checkMobile);
 
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+    };
   }, []);
 
   // Simulate app initialization
@@ -71,6 +100,22 @@ export default function Home() {
       }
       
       const direction = e.deltaY > 0 ? 'down' : 'up';
+
+      // NEW: Check scroll boundaries before triggering transitions
+      if (hasOverflow && sectionContentRef.current) {
+        if (direction === 'down' && canScrollDown) {
+          // Scroll content down instead of transitioning
+          sectionContentRef.current.scrollTop += e.deltaY;
+          return;
+        }
+        if (direction === 'up' && canScrollUp) {
+          // Scroll content up instead of transitioning
+          sectionContentRef.current.scrollTop += e.deltaY;
+          return;
+        }
+      }
+
+      // Only trigger transitions at boundaries or when no overflow
       const currentIndex = pageKeys.indexOf(transition.currentPage);
 
       // Determine next page index
@@ -107,7 +152,7 @@ export default function Home() {
         currentRef.removeEventListener('wheel', handleWheel);
       }
     };
-  }, [transition, isAppLoading, isMobile]);
+  }, [transition, isAppLoading, isMobile, hasOverflow, canScrollDown, canScrollUp]);
 
   // Handle transition end with improved timing
   useEffect(() => {
@@ -217,6 +262,7 @@ export default function Home() {
       <CursorFollower />
       <VantaBackground />
       <FloatingElements count={15} />
+      
       <div style={{
         position: 'relative',
         width: '100%',
@@ -224,10 +270,12 @@ export default function Home() {
       }}>
         {/* Current component with enhanced 3D transitions */}
         <div 
+          ref={sectionContentRef}
           style={{
             position: 'absolute',
             width: '100%',
             height: '100%',
+            overflow: 'auto',
             ...getTransform(transition.nextPage ? 'current' : 'none'),
             transition: 'all 1.2s cubic-bezier(0.4, 0, 0.2, 1)',
             transformStyle: 'preserve-3d',
@@ -239,7 +287,7 @@ export default function Home() {
             transform: 'translateZ(0)',
             backfaceVisibility: 'hidden',
             width: '100%',
-            height: '100%'
+            minHeight: '100%'
           }}>
             <CurrentComponent />
           </div>
