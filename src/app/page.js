@@ -221,8 +221,8 @@ export default function Home() {
           margin: 0,
           padding: 0
         }}>
-          <ScrollProgress currentPage={transition.currentPage} totalPages={4} />
-          <GlassmorphismNav currentPage={transition.currentPage} totalPages={4} />
+          <ScrollProgress currentPage={transition.currentPage} totalPages={4} isMobile={true} />
+          <GlassmorphismNav currentPage={transition.currentPage} totalPages={4} isMobile={true} />
           <CursorFollower />
           <VantaBackground />
           <FloatingElements count={8} />

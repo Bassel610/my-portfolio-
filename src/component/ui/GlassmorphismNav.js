@@ -2,29 +2,62 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
-export default function GlassmorphismNav({ currentPage, totalPages }) {
+export default function GlassmorphismNav({ currentPage, totalPages, isMobile = false }) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollTime, setLastScrollTime] = useState(Date.now());
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const pages = [
     { id: 'page-one', name: 'Home', icon: '🏠' },
     { id: 'page-two', name: 'About', icon: '👨‍💻' },
     { id: 'page-three', name: 'Experience', icon: '🚀' },
-    { id: 'page-four', name: 'Contact', icon: '📧' }
+    { id: 'page-four', name: 'Projects', icon: '💼' }
   ];
 
+  // Track scroll position on mobile
   useEffect(() => {
-    setLastScrollTime(Date.now());
-    setIsVisible(true);
+    if (isMobile) {
+      const handleScroll = () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        
+        // Calculate which section is active based on scroll
+        const sectionHeight = docHeight / totalPages;
+        const currentSection = Math.min(
+          Math.floor(scrollTop / sectionHeight),
+          totalPages - 1
+        );
+        setActiveIndex(currentSection);
+        
+        // Show nav on scroll
+        setIsVisible(true);
+        setLastScrollTime(Date.now());
+      };
 
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-    }, 3000);
+      window.addEventListener('scroll', handleScroll);
+      handleScroll(); // Initial call
 
-    return () => clearTimeout(timer);
-  }, [currentPage]);
+      return () => window.removeEventListener('scroll', handleScroll);
+    } else {
+      // Desktop: use currentPage prop
+      const currentIndex = pages.findIndex(page => page.id === currentPage);
+      setActiveIndex(currentIndex >= 0 ? currentIndex : 0);
+    }
+  }, [currentPage, totalPages, isMobile]);
 
-  const currentIndex = pages.findIndex(page => page.id === currentPage);
+  // Auto-hide after 3 seconds
+  useEffect(() => {
+    if (!isMobile) {
+      setLastScrollTime(Date.now());
+      setIsVisible(true);
+
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentPage, isMobile]);
 
   return (
     <motion.div
@@ -46,7 +79,7 @@ export default function GlassmorphismNav({ currentPage, totalPages }) {
         maxWidth: 'calc(100vw - 40px)'
       }}
       onMouseEnter={() => setIsVisible(true)}
-      onMouseLeave={() => setIsVisible(false)}
+      onMouseLeave={() => !isMobile && setIsVisible(false)}
     >
       <div style={{
         background: 'rgba(255, 255, 255, 0.1)',
@@ -81,7 +114,7 @@ export default function GlassmorphismNav({ currentPage, totalPages }) {
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '12px'
+          gap: window.innerWidth < 768 ? '8px' : '12px'
         }}>
           {pages.map((page, index) => (
             <motion.div
@@ -90,12 +123,12 @@ export default function GlassmorphismNav({ currentPage, totalPages }) {
                 position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                padding: '8px 12px',
+                gap: '6px',
+                padding: window.innerWidth < 768 ? '6px 10px' : '8px 12px',
                 borderRadius: '25px',
                 cursor: 'pointer',
-                color: currentIndex === index ? '#fff' : 'rgba(255, 255, 255, 0.6)',
-                fontSize: '14px',
+                color: activeIndex === index ? '#fff' : 'rgba(255, 255, 255, 0.6)',
+                fontSize: window.innerWidth < 768 ? '12px' : '14px',
                 fontWeight: '500'
               }}
               whileHover={{ 
@@ -105,7 +138,7 @@ export default function GlassmorphismNav({ currentPage, totalPages }) {
               whileTap={{ scale: 0.95 }}
             >
               {/* Active background */}
-              {currentIndex === index && (
+              {activeIndex === index && (
                 <motion.div
                   layoutId="activeNav"
                   style={{
@@ -124,31 +157,47 @@ export default function GlassmorphismNav({ currentPage, totalPages }) {
 
               {/* Icon */}
               <span style={{ 
-                fontSize: '16px',
+                fontSize: window.innerWidth < 768 ? '14px' : '16px',
                 position: 'relative',
                 zIndex: 1
               }}>
                 {page.icon}
               </span>
 
-              {/* Text (only show on hover or active) */}
-              <motion.span
-                style={{
-                  position: 'relative',
-                  zIndex: 1,
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap'
-                }}
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ 
-                  width: currentIndex === index ? 'auto' : 0,
-                  opacity: currentIndex === index ? 1 : 0
-                }}
-                whileHover={{ width: 'auto', opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                {page.name}
-              </motion.span>
+              {/* Text - Always show on mobile, animate on desktop */}
+              {window.innerWidth < 768 ? (
+                // Mobile: Always show text
+                <span
+                  style={{
+                    position: 'relative',
+                    zIndex: 1,
+                    whiteSpace: 'nowrap',
+                    fontSize: '11px',
+                    fontWeight: activeIndex === index ? '600' : '500'
+                  }}
+                >
+                  {page.name}
+                </span>
+              ) : (
+                // Desktop: Animate text
+                <motion.span
+                  style={{
+                    position: 'relative',
+                    zIndex: 1,
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap'
+                  }}
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ 
+                    width: activeIndex === index ? 'auto' : 0,
+                    opacity: activeIndex === index ? 1 : 0
+                  }}
+                  whileHover={{ width: 'auto', opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {page.name}
+                </motion.span>
+              )}
             </motion.div>
           ))}
         </div>
@@ -169,7 +218,7 @@ export default function GlassmorphismNav({ currentPage, totalPages }) {
               borderRadius: '2px'
             }}
             initial={{ width: '0%' }}
-            animate={{ width: `${((currentIndex + 1) / totalPages) * 100}%` }}
+            animate={{ width: `${((activeIndex + 1) / totalPages) * 100}%` }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
           />
         </div>
